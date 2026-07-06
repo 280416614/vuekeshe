@@ -13,11 +13,6 @@ const routes = [
         component: () => import('../views/FocusTimer.vue'),
     },
     {
-        path: '/statistics',
-        name: 'Statistics',
-        component: () => import('../views/Statistics.vue'),
-    },
-    {
         path: '/settings',
         name: 'Settings',
         component: () => import('../views/Settings.vue'),
