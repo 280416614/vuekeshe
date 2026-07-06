@@ -104,24 +104,23 @@ function updateTask(taskId, data) {
 }
 
 // ==================== 番茄钟 / 计时 ====================
-
-/** 完成一个番茄钟 */
-function completePomodoro(taskId) {
+/** 完成一个番茄钟，duration 为本次实际专注的分钟数 */
+function completePomodoro(taskId, duration) {
     const task = store.tasks.find((t) => t.id === taskId)
     if (!task) return
 
+    const actualDuration = duration || store.settings.focusDuration
+
     task.completedPomodoros++
 
-    // 记录专注日志
     store.logs.push({
         id: genId(),
         taskId,
-        startTime: Date.now() - store.settings.focusDuration * 60 * 1000,
+        startTime: Date.now() - actualDuration * 60 * 1000,
         endTime: Date.now(),
-        duration: store.settings.focusDuration,
+        duration: actualDuration,
     })
 
-    // 达到预估番茄数 → 自动标记完成
     if (task.completedPomodoros >= task.estimatedPomodoros) {
         task.status = 'completed'
         task.completedAt = Date.now()

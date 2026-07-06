@@ -6,17 +6,7 @@ const routes = [
         path: '/',
         name: 'TodayPlan',
         component: () => import('../views/TodayPlan.vue'),
-    },
-    {
-        path: '/focus/:taskId',
-        name: 'FocusTimer',
-        component: () => import('../views/FocusTimer.vue'),
-    },
-    {
-        path: '/settings',
-        name: 'Settings',
-        component: () => import('../views/Settings.vue'),
-    },
+    }
 ]
 
 const router = createRouter({
