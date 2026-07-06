@@ -72,3 +72,12 @@ UI 组件库：Element Plus
 状态管理：使用全局 reactive 对象 + watch 即可，降低复杂度
 
 数据持久化：localStorage
+
+《Web前端开发实践》课程认定方案：
+完成一个小作品，必须至少展示三项Vue技术的运用。
+
+
+三项Vue技术说明：
+技术1：Vue数据绑定
+技术2：Vue组件
+技术3：Vue路由
