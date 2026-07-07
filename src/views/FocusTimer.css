@@ -1,0 +1,131 @@
+.focus-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f7ff 0%, #eef4ff 100%);
+  border-radius: 20px;
+}
+
+.open-btn,
+.toolbar button,
+.close-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #409eff, #2563eb);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.open-btn:hover,
+.toolbar button:hover,
+.close-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup {
+  width: min(92vw, 440px);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+  text-align: center;
+  border: 1px solid #e5eefc;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #1f2937;
+}
+
+.close-btn {
+  padding: 4px 10px;
+  background: #f56c6c;
+}
+
+.subtitle {
+  color: #64748b;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.timer {
+  font-size: 64px;
+  font-weight: 800;
+  text-align: center;
+  margin: 14px 0 18px;
+  color: #111827;
+  letter-spacing: 2px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.toolbar .primary {
+  background: linear-gradient(135deg, #34c759, #16a34a);
+}
+
+.meta {
+  display: flex;
+  justify-content: center;
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+.task-select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.task-select span {
+  color: #475569;
+  font-size: 14px;
+}
+
+.task-select select {
+  padding: 9px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+  min-width: 220px;
+  outline: none;
+}
+
+.status {
+  margin-top: 8px;
+  color: #2563eb;
+  text-align: center;
+  font-weight: 600;
+}
