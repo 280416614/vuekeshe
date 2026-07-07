@@ -1,13 +1,190 @@
 <template>
-    <div>
+  <div class="focus-shell">
+    <button class="open-btn" @click="openTimer">开始专注</button>
 
+    <div v-if="isOpen" class="overlay" @click.self="handleClose">
+      <div class="popup">
+        <div class="header">
+          <h3>专注时钟</h3>
+          <button class="close-btn" @click="handleClose">×</button>
+        </div>
+
+        <p class="subtitle">当前任务：{{ selectedTaskTitle }}</p>
+        <div class="timer">{{ formattedTime }}</div>
+
+        <div class="toolbar">
+          <button class="primary" @click="toggleTimer">{{ isRunning ? '暂停' : '开始' }}</button>
+          <button @click="resetTimer">重置</button>
+          <button @click="requestNotificationPermission">通知权限</button>
+        </div>
+
+        <div class="meta">
+          <span>专注时长：{{ focusDuration }} 分钟</span>
+        </div>
+
+        <label class="task-select">
+          <span>选择任务</span>
+          <select v-model="selectedTaskId">
+            <option value="">未选择</option>
+            <option v-for="task in pendingTasks" :key="task.id" :value="task.id">
+              {{ task.title }}（{{ task.estimatedPomodoros }} 个番茄）
+            </option>
+          </select>
+        </label>
+
+        <p class="status">{{ statusText }}</p>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
+import './FocusTimer.css'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { ElMessage } from 'element-plus'
+import { completePomodoro, store } from '../store/store'
 
+const isOpen = ref(false)
+const remainingSeconds = ref(store.settings.focusDuration * 60)
+const isRunning = ref(false)
+const statusText = ref('准备开始')
+const selectedTaskId = ref('')
+const timerId = ref(null)
+
+const pendingTasks = computed(() => store.tasks.filter((task) => task.status === 'pending'))
+const focusDuration = computed(() => store.settings.focusDuration)
+
+const selectedTaskTitle = computed(() => {
+  const task = pendingTasks.value.find((item) => item.id === selectedTaskId.value)
+  return task ? task.title : '暂无任务'
+})
+
+const formattedTime = computed(() => {
+  const minutes = String(Math.floor(remainingSeconds.value / 60)).padStart(2, '0')
+  const seconds = String(remainingSeconds.value % 60).padStart(2, '0')
+  return `${minutes}:${seconds}`
+})
+
+watch(focusDuration, (value) => {
+  if (!isRunning.value) {
+    remainingSeconds.value = value * 60
+  }
+})
+
+watch(
+  () => store.tasks,
+  () => {
+    if (!selectedTaskId.value && pendingTasks.value.length) {
+      selectedTaskId.value = pendingTasks.value[0].id
+    }
+  },
+  { deep: true }
+)
+
+function openTimer() {
+  isOpen.value = true
+  if (!selectedTaskId.value && pendingTasks.value.length) {
+    selectedTaskId.value = pendingTasks.value[0].id
+  }
+  // 不在打开时自动开始计时，重新打开时保持当前 paused/running 状态
+}
+
+function clearTimer() {
+  if (timerId.value) {
+    clearInterval(timerId.value)
+    timerId.value = null
+  }
+}
+
+function startTimer() {
+  if (timerId.value) return
+  isRunning.value = true
+  statusText.value = '专注中'
+  timerId.value = setInterval(() => {
+    if (remainingSeconds.value > 0) {
+      remainingSeconds.value--
+    } else {
+      finishTimer()
+    }
+  }, 1000)
+}
+
+function pauseTimer() {
+  clearTimer()
+  isRunning.value = false
+  statusText.value = '已暂停'
+}
+
+function toggleTimer() {
+  if (isRunning.value) {
+    pauseTimer()
+  } else {
+    startTimer()
+  }
+}
+
+function resetTimer() {
+  clearTimer()
+  isRunning.value = false
+  remainingSeconds.value = focusDuration.value * 60
+  statusText.value = '已重置'
+}
+
+function finishTimer() {
+  clearTimer()
+  isRunning.value = false
+
+  if (selectedTaskId.value) {
+    completePomodoro(selectedTaskId.value, focusDuration.value)
+    statusText.value = '专注完成'
+  } else {
+    statusText.value = '请选择任务后再完成番茄钟'
+  }
+
+  remainingSeconds.value = 0
+  showNotification('专注结束', '本次番茄钟已完成')
+  ElMessage.success('番茄钟完成')
+}
+
+function handleClose() {
+  // 暂停计时并隐藏弹窗，重新打开时按钮应显示“开始”
+  clearTimer()
+  isRunning.value = false
+  isOpen.value = false
+  statusText.value = '已关闭计时器'
+}
+
+function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    ElMessage.warning('当前浏览器不支持通知')
+    return
+  }
+
+  if (Notification.permission === 'granted') {
+    showNotification('通知已开启', '你将收到专注结束提醒')
+    return
+  }
+
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      showNotification('通知已开启', '你将收到专注结束提醒')
+    } else {
+      ElMessage.warning('通知权限已拒绝')
+    }
+  })
+}
+
+function showNotification(title, body) {
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification(title, { body })
+  }
+}
+
+onMounted(() => {
+  openTimer()
+})
+
+onBeforeUnmount(() => {
+  clearTimer()
+})
 </script>
-
-<style  scoped>
-
-</style>
