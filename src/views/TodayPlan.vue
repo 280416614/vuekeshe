@@ -1,9 +1,13 @@
 <template>
-  <div class="page">
-    <h2>今日计划</h2>
+  <div class="today-plan-page">
+    <h2>学习计划</h2>
+    <p>开始一个专注时段，跟着番茄钟把学习任务推进下去。</p>
 
-    <!-- ① 绑定 store.settings（响应式读取） -->
-    <p>你好，{{ store.settings.username }}！默认专注 {{ store.settings.focusDuration }} 分钟</p>
+    <div class="task-form">
+      <el-input v-model="title" placeholder="任务标题" style="width: 220px" />
+      <el-input-number v-model="pomos" :min="1" :max="20" />
+      <el-button type="primary" @click="handleAdd">添加任务</el-button>
+    </div>
 
     <!-- ② 表单：输入任务标题 -->
     <el-input v-model="title" placeholder="任务标题" style="width: 200px" />
@@ -24,15 +28,15 @@
         <!-- ⑤ 调用 deleteTask -->
       </li>
     </ul>
-     <FocusTimer ref="focusTimerRef" />
+
+    <FocusTimer ref="focusTimerRef" />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-// ⑥ 按需导入
 import { store, addTask, deleteTask } from '../store/store'
-import FocusTimer from './FocusTimer.vue' 
+import FocusTimer from './FocusTimer.vue'
 
 const title = ref('')
 const focusTimerRef = ref(null) 
@@ -44,11 +48,11 @@ function handleAdd() {
 }
 
 function handleDelete(id) {
-  deleteTask(id)  // 改 store → 自动存盘、自动渲染
+  deleteTask(id)
 }
 
 function opentimer(task) {
-  focusTimerRef.value?.openTimer(task.id)  // 把任务 id 传过去
+  focusTimerRef.value?.openTimer(task.id)
 }
 </script>
 
