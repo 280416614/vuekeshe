@@ -18,7 +18,7 @@ function save(key, value) {
 function initDefaultData() {
     // 首次使用时创建默认用户名
     if (!localStorage.getItem('settings')) {
-        save('settings', { username: '同学', focusDuration: 25 })
+        save('settings', { username: '同学', focusDuration: 1 })
     }
     if (!localStorage.getItem('tasks')) {
         save('tasks', [])
@@ -35,15 +35,14 @@ const store = reactive({
       settings: { username, focusDuration }
       focusDuration: 专注时长（分钟），默认 25
     */
-    settings: load('settings', { username: '同学', focusDuration: 25 }),
+    settings: load('settings', { username: '同学', focusDuration: 1 }),
 
     /*
       tasks: [
         {
           id: string,            // 唯一标识
           title: string,         // 任务标题
-          estimatedPomodoros: number,  // 预估番茄数
-          completedPomodoros: number,  // 已完成番茄数
+          duration: number,      // 该任务专注时长（分钟）
           createdAt: timestamp,  // 创建时间
           completedAt: timestamp | null, // 完成时间
           status: 'pending' | 'completed'
@@ -79,12 +78,11 @@ function genId() {
 // ==================== 任务 CRUD ====================
 
 /** 添加任务 */
-function addTask(title, estimatedPomodoros) {
+function addTask(title, duration) {
     store.tasks.unshift({
         id: genId(),
         title,
-        estimatedPomodoros: Number(estimatedPomodoros),
-        completedPomodoros: 0,
+        duration: duration || store.settings.focusDuration,
         createdAt: Date.now(),
         completedAt: null,
         status: 'pending',
@@ -104,14 +102,12 @@ function updateTask(taskId, data) {
 }
 
 // ==================== 番茄钟 / 计时 ====================
-/** 完成一个番茄钟，duration 为本次实际专注的分钟数 */
+/** 完成一个番茄钟，标记任务为已完成 */
 function completePomodoro(taskId, duration) {
     const task = store.tasks.find((t) => t.id === taskId)
     if (!task) return
 
-    const actualDuration = duration || store.settings.focusDuration
-
-    task.completedPomodoros++
+    const actualDuration = duration || task.duration || store.settings.focusDuration
 
     store.logs.push({
         id: genId(),
@@ -121,10 +117,8 @@ function completePomodoro(taskId, duration) {
         duration: actualDuration,
     })
 
-    if (task.completedPomodoros >= task.estimatedPomodoros) {
-        task.status = 'completed'
-        task.completedAt = Date.now()
-    }
+    task.status = 'completed'
+    task.completedAt = Date.now()
 }
 
 // ==================== 查询辅助 ====================

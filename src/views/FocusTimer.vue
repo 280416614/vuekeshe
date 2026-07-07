@@ -97,6 +97,7 @@ function openTimer(taskId) {
     isRunning.value = false
     statusText.value = state.statusText
     clearTimer()
+    startTimer()
   } else if (!selectedTaskId.value && pendingTasks.value.length) {
     selectedTaskId.value = pendingTasks.value[0].id
   }
