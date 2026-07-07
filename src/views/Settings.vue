@@ -1,10 +1,5 @@
 ﻿<template>
   <div class="settings-page">
-    <h2>任务设置</h2>
-    <p>在当前页面直接修改任务名称和专注倒计时时长。</p>
-
-    <el-button type="primary" @click="openDialog">编辑任务</el-button>
-
     <el-dialog
       v-model="dialogVisible"
       title="编辑任务"
@@ -40,7 +35,7 @@ const editTitle = ref('')
 const editFocusDuration = ref(25)
 const currentTaskId = ref('')
 
-function openDialog(taskId = null) {
+function openDialog(taskId=null) {
   const targetTask = taskId
     ? store.tasks.find((task) => task.id === taskId)
     : store.tasks[0]

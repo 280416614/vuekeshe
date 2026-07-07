@@ -5,14 +5,8 @@
 
     <div class="task-form">
       <el-input v-model="title" placeholder="任务标题" style="width: 220px" />
-      <el-input-number v-model="pomos" :min="1" :max="20" />
       <el-button type="primary" @click="handleAdd">添加任务</el-button>
     </div>
-
-    <!-- ② 表单：输入任务标题 -->
-    <el-input v-model="title" placeholder="任务标题" style="width: 200px" />
-    <!-- ③ 调用 addTask（修改 store） -->
-    <el-button type="primary" @click="handleAdd">添加任务</el-button>
 
     <!-- ④ 直接循环渲染 store.tasks（响应式列表） -->
     <ul>
@@ -22,7 +16,7 @@
         </span>
         <span class="actions">
         <el-button size="big" text type="warning" class="btn" @click="opentimer(task)">🍅</el-button>
-        <el-button size="big" text type="danger" class="btn" @click="editTask(task)">✏️</el-button>
+        <el-button size="big" text type="danger" class="btn" @click="openDialog(task.id)">✏️</el-button>
         <el-button size="big" text type="danger" class="btn" @click="handleDelete(task.id)">🗑️</el-button>
         </span>
         <!-- ⑤ 调用 deleteTask -->
@@ -30,6 +24,7 @@
     </ul>
 
     <FocusTimer ref="focusTimerRef" />
+    <Settings ref="settingsRef" /> 
   </div>
 </template>
 
@@ -37,9 +32,11 @@
 import { ref } from 'vue'
 import { store, addTask, deleteTask } from '../store/store'
 import FocusTimer from './FocusTimer.vue'
+import Settings from './Settings.vue'
 
 const title = ref('')
 const focusTimerRef = ref(null) 
+const settingsRef = ref(null)
 
 function handleAdd() {
   if (!title.value.trim()) return
@@ -53,6 +50,10 @@ function handleDelete(id) {
 
 function opentimer(task) {
   focusTimerRef.value?.openTimer(task.id)
+}
+
+function openDialog(taskId) {
+  settingsRef.value?.openDialog(taskId)
 }
 </script>
 

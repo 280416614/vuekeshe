@@ -295,7 +295,7 @@ code {
     border-right-color: var(--border);
   }
 }
-.page { 
+.today-plan-page { 
   width: 100%;
   background: rgba(10, 11, 11, 0.532);
   padding: 24px;
