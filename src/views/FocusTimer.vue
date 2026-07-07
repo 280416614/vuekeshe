@@ -1,6 +1,6 @@
 <template>
-  <div class="focus-shell">
-    <button class="open-btn" @click="openTimer">开始专注</button>
+  <div >
+
 
     <div v-if="isOpen" class="overlay" @click.self="handleClose">
       <div class="popup">
@@ -22,15 +22,7 @@
           <span>专注时长：{{ focusDuration }} 分钟</span>
         </div>
 
-        <label class="task-select">
-          <span>选择任务</span>
-          <select v-model="selectedTaskId">
-            <option value="">未选择</option>
-            <option v-for="task in pendingTasks" :key="task.id" :value="task.id">
-              {{ task.title }}（{{ task.estimatedPomodoros }} 个番茄）
-            </option>
-          </select>
-        </label>
+
 
         <p class="status">{{ statusText }}</p>
       </div>
@@ -40,7 +32,7 @@
 
 <script setup>
 import './FocusTimer.css'
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { completePomodoro, store } from '../store/store'
 
@@ -50,6 +42,20 @@ const isRunning = ref(false)
 const statusText = ref('准备开始')
 const selectedTaskId = ref('')
 const timerId = ref(null)
+
+// ★ 每个任务独立的计时状态
+const taskTimerMap = reactive({})
+
+function getTaskState(taskId) {
+  if (!taskTimerMap[taskId]) {
+    taskTimerMap[taskId] = {
+      remainingSeconds: store.settings.focusDuration * 60,
+      isRunning: false,
+      statusText: '准备开始',
+    }
+  }
+  return taskTimerMap[taskId]
+}
 
 const pendingTasks = computed(() => store.tasks.filter((task) => task.status === 'pending'))
 const focusDuration = computed(() => store.settings.focusDuration)
@@ -81,12 +87,19 @@ watch(
   { deep: true }
 )
 
-function openTimer() {
+function openTimer(taskId) {
   isOpen.value = true
-  if (!selectedTaskId.value && pendingTasks.value.length) {
+  if (taskId) {
+    selectedTaskId.value = taskId
+    // 恢复该任务的独立状态
+    const state = getTaskState(taskId)
+    remainingSeconds.value = state.remainingSeconds
+    isRunning.value = false
+    statusText.value = state.statusText
+    clearTimer()
+  } else if (!selectedTaskId.value && pendingTasks.value.length) {
     selectedTaskId.value = pendingTasks.value[0].id
   }
-  // 不在打开时自动开始计时，重新打开时保持当前 paused/running 状态
 }
 
 function clearTimer() {
@@ -103,6 +116,10 @@ function startTimer() {
   timerId.value = setInterval(() => {
     if (remainingSeconds.value > 0) {
       remainingSeconds.value--
+      // ★ 保存当前任务的剩余时间
+      if (selectedTaskId.value) {
+        getTaskState(selectedTaskId.value).remainingSeconds = remainingSeconds.value
+      }
     } else {
       finishTimer()
     }
@@ -128,6 +145,12 @@ function resetTimer() {
   isRunning.value = false
   remainingSeconds.value = focusDuration.value * 60
   statusText.value = '已重置'
+  // ★ 保存重置后的状态
+  if (selectedTaskId.value) {
+    const state = getTaskState(selectedTaskId.value)
+    state.remainingSeconds = remainingSeconds.value
+    state.statusText = '已重置'
+  }
 }
 
 function finishTimer() {
@@ -142,6 +165,10 @@ function finishTimer() {
   }
 
   remainingSeconds.value = 0
+  // ★ 保存完成状态
+  if (selectedTaskId.value) {
+    getTaskState(selectedTaskId.value).remainingSeconds = 0
+  }
   showNotification('专注结束', '本次番茄钟已完成')
   ElMessage.success('番茄钟完成')
 }
@@ -180,11 +207,9 @@ function showNotification(title, body) {
   }
 }
 
-onMounted(() => {
-  openTimer()
-})
-
 onBeforeUnmount(() => {
   clearTimer()
 })
+
+defineExpose({ openTimer })
 </script>
