@@ -4,7 +4,7 @@
     <p>学如逆水行舟，不进则退。</p>
 
     <div class="task-form">
-      <el-button type="primary" @click="$router.push('/add-task')">+ 添加任务</el-button>
+      <el-button type="primary" class="btn" @click="$router.push('/add-task')">+ 添加任务</el-button>
     </div>
 
     <ul>
@@ -13,9 +13,11 @@
         :key="task.id"
         :class="{ completed: task.status === 'completed' }"
       >
-        <span>{{ task.title }}</span>
-        <span class="actions">
+        <span>{{ task.title }}
         <el-button size="big" text type="warning" class="btn" :disabled="task.status === 'completed'" @click="opentimer(task)">🍅</el-button>
+        </span>
+        
+        <span class="actions">
         <el-button size="big" text type="danger" class="btn" :disabled="task.status === 'completed'" @click="openDialog(task.id)">✏️</el-button>
         <el-button size="big" text type="danger" class="btn" @click="handleDelete(task.id)">🗑️</el-button>
         </span>
