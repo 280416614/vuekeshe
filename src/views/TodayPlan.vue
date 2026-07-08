@@ -3,8 +3,8 @@
     <h2>学习计划</h2>
     <p>学如逆水行舟，不进则退。</p>
 
-    <div class="task-form">
-      <el-button type="primary" class="btn" @click="$router.push('/add-task')">+ 添加任务</el-button>
+    <div>
+      <el-button type="primary" class="btn2" @click="$router.push('/add-task')">+ 添加任务</el-button>
     </div>
 
     <ul>
@@ -14,12 +14,12 @@
         :class="{ completed: task.status === 'completed' }"
       >
         <span>{{ task.title }}
-        <el-button size="big" text type="warning" class="btn" :disabled="task.status === 'completed'" @click="opentimer(task)">🍅</el-button>
+        <el-button size="big" text  class="btn" :disabled="task.status === 'completed'" @click="opentimer(task.id)">🍅</el-button>
         </span>
         
         <span class="actions">
-        <el-button size="big" text type="danger" class="btn" :disabled="task.status === 'completed'" @click="openDialog(task.id)">✏️</el-button>
-        <el-button size="big" text type="danger" class="btn" @click="handleDelete(task.id)">🗑️</el-button>
+        <el-button size="big" text  class="btn" :disabled="task.status === 'completed'" @click="openDialog(task.id)">✏️</el-button>
+        <el-button size="big" text  class="btn" @click="handleDelete(task.id)">🗑️</el-button>
         </span>
       </li>
     </ul>
@@ -49,8 +49,8 @@ function handleDelete(id) {
   deleteTask(id)
 }
 
-function opentimer(task) {
-  focusTimerRef.value?.openTimer(task.id)
+function opentimer(taskId) {
+  focusTimerRef.value?.openTimer(taskId)
 }
 
 function openDialog(taskId) {

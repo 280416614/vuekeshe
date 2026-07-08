@@ -9,12 +9,12 @@
       </el-form-item>
 
       <el-form-item class="titleform" label="专注时长（分钟）">
-        <el-input-number v-model="duration" :min="1" :max="120" />
+        <el-input-number v-model="duration" :min="1" :max="999" />
       </el-form-item>
 
       <el-form-item>
-        <el-button class="btn" @click="$router.push('/')">取消</el-button>
-        <el-button class="btn" type="primary" @click="handleSave">保存</el-button>
+        <el-button class="btn2" type="primary" @click="$router.push('/')">取消</el-button>
+        <el-button class="btn2" type="primary" @click="handleSave">保存</el-button>
       </el-form-item>
     </el-form>
   </div>

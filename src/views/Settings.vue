@@ -12,7 +12,7 @@
         </el-form-item>
 
         <el-form-item label="倒计时时长">
-          <el-input-number v-model="editFocusDuration" :min="1" :max="90" />
+          <el-input-number v-model="editFocusDuration" :min="1" :max="999" />
           <span class="hint">分钟</span>
         </el-form-item>
       </el-form>

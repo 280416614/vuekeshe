@@ -45,9 +45,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(2px);
   border-radius: 50px;
   z-index: -1;
 }
@@ -95,6 +93,19 @@ li.completed .btn.is-disabled {
   font-size: 16px !important;
   min-width: auto !important;
   height: auto !important;
+}
+.btn2 {
+  border: none ;
+  background: transparent ;
+  padding: 10px ;
+  font-size: 16px ;
+  background: rgba(255, 255, 255, 0.078) ;
+  border-radius: 50px ;
+}
+.btn2:hover {
+  transform: scale(1.6);
+  background: transparent ;
+  border: none ;
 }
 
 .btn:hover {
