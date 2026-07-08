@@ -1,6 +1,7 @@
 <template>
   <div class="add-task-page">
-    <h2>添加任务</h2>
+    <h3>添加任务</h3>
+    <p2>之能为人，由腹有诗书。——韩愈</p2>
 
     <el-form label-position="top">
       <el-form-item  label="任务名称" class="titleform">
