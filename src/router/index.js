@@ -6,7 +6,12 @@ const routes = [
         path: '/',
         name: 'TodayPlan',
         component: () => import('../views/TodayPlan.vue'),
-    }
+    },
+    {
+        path: '/add-task',
+        name: 'AddTask',
+        component: () => import('../views/AddTask.vue'),
+    },
 ]
 
 const router = createRouter({

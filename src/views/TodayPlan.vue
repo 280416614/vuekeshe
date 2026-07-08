@@ -4,8 +4,7 @@
     <p>学如逆水行舟，不进则退。</p>
 
     <div class="task-form">
-      <el-input v-model="title" placeholder="任务标题" style="width: 220px" />
-      <el-button type="primary" @click="handleAdd">添加任务</el-button>
+      <el-button type="primary" @click="$router.push('/add-task')">+ 添加任务</el-button>
     </div>
 
     <ul>
@@ -24,18 +23,16 @@
     </ul>
 
     <FocusTimer ref="focusTimerRef" />
-    <Settings ref="settingsRef" /> 
     <Settings ref="settingsRef" @saved="onTaskSaved" />
   </div>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
-import { store, addTask, deleteTask } from '../store/store'
+import { store, deleteTask } from '../store/store'
 import FocusTimer from './FocusTimer.vue'
 import Settings from './Settings.vue'
 
-const title = ref('')
 const focusTimerRef = ref(null) 
 const settingsRef = ref(null)
 
@@ -45,13 +42,6 @@ const sortedTasks = computed(() => {
   const completed = store.tasks.filter((t) => t.status === 'completed')
   return [...pending, ...completed]
 })
-
-function handleAdd() {
-  if (!title.value.trim()) return
-  addTask(title.value.trim())  // 改 store → 自动存盘、自动渲染
-  settingsRef.value?.openDialog() // 保存设置
-  title.value = ''
-}
 
 function handleDelete(id) {
   deleteTask(id)
