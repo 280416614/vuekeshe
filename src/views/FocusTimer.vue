@@ -211,6 +211,12 @@ function showNotification(title, body) {
 onBeforeUnmount(() => {
   clearTimer()
 })
+function resetTaskState(taskId) {
+  if (taskTimerMap[taskId]) {
+    delete taskTimerMap[taskId]
+  }
+  return
+}
 
-defineExpose({ openTimer })
+defineExpose({ openTimer,resetTaskState })
 </script>

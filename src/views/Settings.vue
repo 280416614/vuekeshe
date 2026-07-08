@@ -30,10 +30,12 @@ import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { store, updateTask } from '../store/store'
 
+
 const dialogVisible = ref(false)
 const editTitle = ref('')
 const editFocusDuration = ref(25)
 const currentTaskId = ref('')
+const emit = defineEmits(['saved'])
 
 function openDialog(taskId=null) {
   const targetTask = taskId
@@ -52,10 +54,6 @@ function openDialog(taskId=null) {
 }
 
 function handleSave() {
-  if (!currentTaskId.value) {
-    ElMessage.warning('请选择任务')
-    return
-  }
   if (!editTitle.value.trim()) {
     ElMessage.warning('任务名称不能为空')
     return
@@ -65,8 +63,8 @@ function handleSave() {
     title: editTitle.value.trim(),
     duration: Number(editFocusDuration.value),
   })
-
   ElMessage.success('任务已更新')
+  emit('saved',currentTaskId.value)
   dialogVisible.value = false
 }
 

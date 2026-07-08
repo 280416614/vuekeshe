@@ -25,6 +25,7 @@
 
     <FocusTimer ref="focusTimerRef" />
     <Settings ref="settingsRef" /> 
+    <Settings ref="settingsRef" @saved="onTaskSaved" />
   </div>
 </template>
 
@@ -63,6 +64,11 @@ function opentimer(task) {
 function openDialog(taskId) {
   settingsRef.value?.openDialog(taskId)
 }
+
+function onTaskSaved(taskId) {
+  focusTimerRef.value?.resetTaskState(taskId)
+}
+
 </script>
 
 <style scoped>
