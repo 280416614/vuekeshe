@@ -35,7 +35,7 @@ watch(() => store.tasks, (val) => save('tasks', val), { deep: true })
 
 // 工具：生成 ID
 function genId() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
+    return Date.now().toString(10)
 }
 
 
@@ -44,8 +44,7 @@ function addTask(title, duration) {
     store.tasks.unshift({
         id: genId(),
         title,
-        duration: duration || 25,
-        createdAt: Date.now(),
+        duration: duration ,
         status: 'pending',
     })
 }

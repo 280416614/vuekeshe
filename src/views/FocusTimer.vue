@@ -183,16 +183,6 @@ function handleClose() {
 }
 
 function requestNotificationPermission() {
-  if (!('Notification' in window)) {
-    ElMessage.warning('当前浏览器不支持通知')
-    return
-  }
-
-  if (Notification.permission === 'granted') {
-    showNotification('通知已开启', '你将收到专注结束提醒')
-    return
-  }
-
   Notification.requestPermission().then((permission) => {
     if (permission === 'granted') {
       showNotification('通知已开启', '你将收到专注结束提醒')
