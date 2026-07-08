@@ -54,7 +54,7 @@ ul {
   list-style: none;
 }
 
-/* 已完成任务：整行划横线 + 灰色 */
+/* 已完成任务：整行划横线 */
 li.completed {
   position: relative;
   opacity: 0.45;

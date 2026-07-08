@@ -43,7 +43,7 @@ const statusText = ref('准备开始')
 const selectedTaskId = ref('')
 const timerId = ref(null)
 
-// ★ 每个任务独立的计时状态
+//  每个任务独立的计时状态
 const taskTimerMap = reactive({})
 
 function getTaskState(taskId) {
@@ -63,7 +63,7 @@ function getTask(taskId) {
 
 const pendingTasks = computed(() => store.tasks.filter((task) => task.status === 'pending'))
 
-// ★ 当前任务自己的专注时长
+//  当前任务自己的专注时长
 const currentTaskDuration = computed(() => {
   const task = store.tasks.find((t) => t.id === selectedTaskId.value)
   return task?.duration || 25
@@ -117,7 +117,7 @@ function startTimer() {
   timerId.value = setInterval(() => {
     if (remainingSeconds.value > 0) {
       remainingSeconds.value--
-      // ★ 保存当前任务的剩余时间
+      //  保存当前任务的剩余时间
       if (selectedTaskId.value) {
         getTaskState(selectedTaskId.value).remainingSeconds = remainingSeconds.value
       }
@@ -146,7 +146,7 @@ function resetTimer() {
   isRunning.value = false
   remainingSeconds.value = currentTaskDuration.value * 60
   statusText.value = '已重置'
-  // ★ 保存重置后的状态
+  // 保存重置后的状态
   if (selectedTaskId.value) {
     const state = getTaskState(selectedTaskId.value)
     state.remainingSeconds = remainingSeconds.value
@@ -166,7 +166,7 @@ function finishTimer() {
   }
 
   remainingSeconds.value = 0
-  // ★ 保存完成状态
+  //  保存完成状态
   if (selectedTaskId.value) {
     getTaskState(selectedTaskId.value).remainingSeconds = 0
   }
