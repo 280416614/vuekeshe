@@ -1,25 +1,25 @@
 <template>
   <div class="today-plan-page">
     <h2>学习计划</h2>
-    <p>开始一个专注时段，跟着番茄钟把学习任务推进下去。</p>
+    <p>学如逆水行舟，不进则退。</p>
 
     <div class="task-form">
       <el-input v-model="title" placeholder="任务标题" style="width: 220px" />
       <el-button type="primary" @click="handleAdd">添加任务</el-button>
     </div>
 
-    <!-- ④ 直接循环渲染 store.tasks（响应式列表） -->
     <ul>
-      <li v-for="task in store.tasks" :key="task.id">
-        <span>
-        {{ task.title }}
-        </span>
+      <li
+        v-for="task in sortedTasks"
+        :key="task.id"
+        :class="{ completed: task.status === 'completed' }"
+      >
+        <span>{{ task.title }}</span>
         <span class="actions">
-        <el-button size="big" text type="warning" class="btn" @click="opentimer(task)">🍅</el-button>
-        <el-button size="big" text type="danger" class="btn" @click="openDialog(task.id)">✏️</el-button>
+        <el-button size="big" text type="warning" class="btn" :disabled="task.status === 'completed'" @click="opentimer(task)">🍅</el-button>
+        <el-button size="big" text type="danger" class="btn" :disabled="task.status === 'completed'" @click="openDialog(task.id)">✏️</el-button>
         <el-button size="big" text type="danger" class="btn" @click="handleDelete(task.id)">🗑️</el-button>
         </span>
-        <!-- ⑤ 调用 deleteTask -->
       </li>
     </ul>
 
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { store, addTask, deleteTask } from '../store/store'
 import FocusTimer from './FocusTimer.vue'
 import Settings from './Settings.vue'
@@ -38,9 +38,17 @@ const title = ref('')
 const focusTimerRef = ref(null) 
 const settingsRef = ref(null)
 
+// 已完成任务排到最底下
+const sortedTasks = computed(() => {
+  const pending = store.tasks.filter((t) => t.status === 'pending')
+  const completed = store.tasks.filter((t) => t.status === 'completed')
+  return [...pending, ...completed]
+})
+
 function handleAdd() {
   if (!title.value.trim()) return
   addTask(title.value.trim())  // 改 store → 自动存盘、自动渲染
+  settingsRef.value?.openDialog() // 保存设置
   title.value = ''
 }
 

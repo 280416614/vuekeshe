@@ -18,7 +18,7 @@ function save(key, value) {
 function initDefaultData() {
     // 首次使用时创建默认用户名
     if (!localStorage.getItem('settings')) {
-        save('settings', { username: '同学', focusDuration: 1 })
+        save('settings', { username: '同学' })
     }
     if (!localStorage.getItem('tasks')) {
         save('tasks', [])
@@ -32,10 +32,9 @@ initDefaultData()
 // ==================== 全局响应式状态 ====================
 const store = reactive({
     /*
-      settings: { username, focusDuration }
-      focusDuration: 专注时长（分钟），默认 25
+      settings: { username }
     */
-    settings: load('settings', { username: '同学', focusDuration: 1 }),
+    settings: load('settings', { username: '同学' }),
 
     /*
       tasks: [
@@ -82,7 +81,7 @@ function addTask(title, duration) {
     store.tasks.unshift({
         id: genId(),
         title,
-        duration: duration || store.settings.focusDuration,
+        duration: duration || 25,
         createdAt: Date.now(),
         completedAt: null,
         status: 'pending',
@@ -107,7 +106,7 @@ function completePomodoro(taskId, duration) {
     const task = store.tasks.find((t) => t.id === taskId)
     if (!task) return
 
-    const actualDuration = duration || task.duration || store.settings.focusDuration
+    const actualDuration = duration || task.duration || 25
 
     store.logs.push({
         id: genId(),

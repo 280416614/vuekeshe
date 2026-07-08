@@ -1,19 +1,19 @@
 ﻿<template>
   <div class="settings-page">
-    <el-dialog
+    <el-dialog class="setting-dialog"
       v-model="dialogVisible"
       title="编辑任务"
       width="480px"
       :close-on-click-modal="false"
     >
-      <el-form label-width="100px">
+      <el-form label-position="top" >
         <el-form-item label="任务名称">
           <el-input v-model="editTitle" placeholder="请输入任务名称" />
         </el-form-item>
 
         <el-form-item label="倒计时时长">
           <el-input-number v-model="editFocusDuration" :min="1" :max="90" />
-          <span class="hint">单位：分钟</span>
+          <span class="hint">分钟</span>
         </el-form-item>
       </el-form>
 
@@ -47,7 +47,7 @@ function openDialog(taskId=null) {
 
   currentTaskId.value = targetTask.id
   editTitle.value = targetTask.title
-  editFocusDuration.value = store.settings.focusDuration
+  editFocusDuration.value = targetTask.duration 
   dialogVisible.value = true
 }
 
@@ -63,9 +63,8 @@ function handleSave() {
 
   updateTask(currentTaskId.value, {
     title: editTitle.value.trim(),
+    duration: Number(editFocusDuration.value),
   })
-
-  store.settings.focusDuration = Number(editFocusDuration.value)
 
   ElMessage.success('任务已更新')
   dialogVisible.value = false
@@ -75,24 +74,5 @@ defineExpose({ openDialog })
 </script>
 
 <style scoped>
-.settings-page {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 24px;
-}
 
-h2 {
-  margin-bottom: 8px;
-}
-
-p {
-  color: #606266;
-  margin-bottom: 16px;
-}
-
-.hint {
-  margin-left: 8px;
-  color: #909399;
-  font-size: 13px;
-}
 </style>

@@ -19,7 +19,7 @@
         </div>
 
         <div class="meta">
-          <span>专注时长：{{ focusDuration }} 分钟</span>
+          <span>专注时长：{{ currentTaskDuration }} 分钟</span>
         </div>
 
 
@@ -37,7 +37,7 @@ import { ElMessage } from 'element-plus'
 import { completePomodoro, store } from '../store/store'
 
 const isOpen = ref(false)
-const remainingSeconds = ref(store.settings.focusDuration * 60)
+const remainingSeconds = ref(25 * 60)
 const isRunning = ref(false)
 const statusText = ref('准备开始')
 const selectedTaskId = ref('')
@@ -49,7 +49,7 @@ const taskTimerMap = reactive({})
 function getTaskState(taskId) {
   if (!taskTimerMap[taskId]) {
     taskTimerMap[taskId] = {
-      remainingSeconds: store.settings.focusDuration * 60,
+      remainingSeconds: getTask(taskId).duration * 60, 
       isRunning: false,
       statusText: '准备开始',
     }
@@ -57,8 +57,17 @@ function getTaskState(taskId) {
   return taskTimerMap[taskId]
 }
 
+function getTask(taskId) {
+  return store.tasks.find((task) => task.id === taskId)
+}
+
 const pendingTasks = computed(() => store.tasks.filter((task) => task.status === 'pending'))
-const focusDuration = computed(() => store.settings.focusDuration)
+
+// ★ 当前任务自己的专注时长
+const currentTaskDuration = computed(() => {
+  const task = store.tasks.find((t) => t.id === selectedTaskId.value)
+  return task?.duration || 25
+})
 
 const selectedTaskTitle = computed(() => {
   const task = pendingTasks.value.find((item) => item.id === selectedTaskId.value)
@@ -69,12 +78,6 @@ const formattedTime = computed(() => {
   const minutes = String(Math.floor(remainingSeconds.value / 60)).padStart(2, '0')
   const seconds = String(remainingSeconds.value % 60).padStart(2, '0')
   return `${minutes}:${seconds}`
-})
-
-watch(focusDuration, (value) => {
-  if (!isRunning.value) {
-    remainingSeconds.value = value * 60
-  }
 })
 
 watch(
@@ -89,7 +92,6 @@ watch(
 
 function openTimer(taskId) {
   isOpen.value = true
-  if (taskId) {
     selectedTaskId.value = taskId
     // 恢复该任务的独立状态
     const state = getTaskState(taskId)
@@ -98,9 +100,7 @@ function openTimer(taskId) {
     statusText.value = state.statusText
     clearTimer()
     startTimer()
-  } else if (!selectedTaskId.value && pendingTasks.value.length) {
-    selectedTaskId.value = pendingTasks.value[0].id
-  }
+
 }
 
 function clearTimer() {
@@ -144,7 +144,7 @@ function toggleTimer() {
 function resetTimer() {
   clearTimer()
   isRunning.value = false
-  remainingSeconds.value = focusDuration.value * 60
+  remainingSeconds.value = currentTaskDuration.value * 60
   statusText.value = '已重置'
   // ★ 保存重置后的状态
   if (selectedTaskId.value) {
@@ -159,7 +159,7 @@ function finishTimer() {
   isRunning.value = false
 
   if (selectedTaskId.value) {
-    completePomodoro(selectedTaskId.value, focusDuration.value)
+    completePomodoro(selectedTaskId.value, currentTaskDuration.value)
     statusText.value = '专注完成'
   } else {
     statusText.value = '请选择任务后再完成番茄钟'

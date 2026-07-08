@@ -32,12 +32,12 @@
 
 .popup {
   width: min(92vw, 440px);
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-  border-radius: 24px;
-  padding: 24px;
+  background: #e9e6e6ea;
+  border-radius: 999px;
+  padding: 30px;
   box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
   text-align: center;
-  border: 1px solid #e5eefc;
+  border: 1px solid #768bad;
 }
 
 .header {
@@ -45,6 +45,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 14px;
+  padding: 0px 30px;
 }
 
 .header h3 {
